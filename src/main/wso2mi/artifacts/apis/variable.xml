@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/variable" name="variable" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/">
+        <inSequence>
+            <variable name="myvar" type="STRING" expression="${configs.dir_location}" />
+            <payloadFactory media-type="json" template-type="default">
+
+                <format>
+                    {"MYVAR":${vars.myvar}}</format>
+            </payloadFactory>
+            <respond />
+        </inSequence>
+        <faultSequence>
+        </faultSequence>
+    </resource>
+</api>

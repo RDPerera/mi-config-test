@@ -1,0 +1,25 @@
+<data name="wso2ds" serviceNamespace="" serviceGroup="" transports="http https"
+    disableStreaming="true">
+    <description />
+    <config id="wso2db">
+        <property name="driverClassName">com.mysql.jdbc.Driver</property>
+        <property name="url">jdbc:mysql://localhost:3306/wso2</property>
+        <property name="username">wso2</property>
+        <property name="password">
+            wso2</property>
+    </config>
+    <query id="get_getpets_query" useConfig="wso2db">
+        <sql>select * from pets;</sql>
+        <result outputType="json">
+        </result>
+        <properties>
+            <property name="fetchDirection">forward</property>
+            <property name="forceStoredProc">false</property>
+            <property name="forceJDBCBatchRequests">false</property>
+        </properties>
+    </query>
+    <resource method="GET" path="getPets" disableStreaming="true">
+
+        <call-query href="get_getpets_query" />
+    </resource>
+</data>

@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: file-access
+  description: API Definition of file-access
+  version: 1.0.0
+servers:
+- url: http://localhost:8290/fil
+paths:
+  /:
+    get:
+      responses:
+        default:
+          description: Default response

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/fil" name="file-access" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/">
+        <inSequence>
+            <file.listFiles configKey="local_system">
+                <directoryPath>{${configs.dir_location}}</directoryPath>
+                <matchingPattern></matchingPattern>
+                <recursive>false</recursive>
+                <responseFormat>Hierarchical</responseFormat>
+                <sortingAttribute>Name</sortingAttribute>
+                <sortingOrder>Ascending</sortingOrder>
+                <maxRetries>0</maxRetries>
+                <retryDelay>0</retryDelay>
+            </file.listFiles>
+
+
+
+
+
+            <respond />
+        </inSequence>
+        <faultSequence>
+        </faultSequence>
+    </resource>
+</api>
