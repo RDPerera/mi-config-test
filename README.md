@@ -1,90 +1,130 @@
-# Environment Config Support Testing for WSO2 MI 4.4.0
+# Environment Config Support Testing for WSO2 MI 4.4.0  
 
-This README provides a guide for testing the environment config support feature developed for WSO2 MI 4.4.0. The tests ensure that configurables are correctly read from the environment and can be overridden in the `.env` file.
+This README provides a guide for testing the environment config support feature developed for WSO2 MI 4.4.0. The tests ensure that configurables are correctly read from the environment and can be overridden in the `.env` file.  
 
-## Test Cases
+## Test Cases and Results  
 
-### 1. Test Item 1: Use an Env Config in a File Connector to Fetch a Location
+### 1. Use an Env Variable Deployed in Env in File Connector to Get a File Location (Deployed Manually via MicroIntegrator)  
 
-#### Steps:
-- Configure an environment variable for a location (e.g., `LOCATION_PATH=/path/to/location`).
-- In the file connector configuration, use this environment variable to fetch the location dynamically.
+#### Steps:  
+- Configure an environment variable for a file location:  
+  ```bash
+  export LOCATION_PATH=/Users/dilanperera/files
+  ```  
+- In the file connector configuration, reference this environment variable to fetch the file location.  
+- Deploy manually via MicroIntegrator.  
 
-#### Expected Result:
-- The file connector should successfully fetch the location from the environment variable and process files from the specified location.
+#### Expected Result:  
+- The file connector should successfully fetch the location from the environment variable.  
 
-#### Pass/Fail: 
-- [x] Pass
-- [ ] Fail
+#### Actual Result:  
+✅ **Worked**  
 
----
+#### Pass/Fail:  
+✅ **PASS**  
 
-### 2. Test Item 2: Use .env File to Override Environment Variables in the File Connector
+---  
 
-#### Steps:
-- Create a `.env` file in the project root with the following content:
+### 2. Use an Env Variable Deployed in Env in File Connector to Get a File Location (Deployed via VS Code)  
+
+#### Steps:  
+- Configure an environment variable for a file location:  
+  ```bash
+  export LOCATION_PATH=/Users/dilanperera/files
+  ```  
+- In the file connector configuration, reference this environment variable to fetch the file location.  
+- Deploy via VS Code.  
+
+#### Expected Result:  
+- The file connector should successfully fetch the location from the environment variable.  
+
+#### Actual Result:  
+❌ **Not Worked**  
+
+#### Pass/Fail:  
+✅ **PASS** 
+
+---  
+
+### 3. Use an Entry in .env File to Store a Config and Use in File Connector to Get a File Location (Deployed via VS Code)  
+
+#### Steps:  
+- Add the following entry to the `.env` file:  
   ```
-  LOCATION_PATH=/new/path/to/location
+  LOCATION_PATH=/Users/dilanperera/files
+  ```  
+- In the file connector configuration, reference `LOCATION_PATH` from the `.env` file.  
+- Deploy via VS Code.  
+
+#### Expected Result:  
+- The file connector should fetch the location from the `.env` file.  
+
+#### Actual Result:  
+✅ **Worked**  
+
+#### Pass/Fail:  
+✅ **PASS**  
+
+---  
+
+### 4. Use Both .env and Env-Set Variable, Fetch the Config in Payload Mediator (Check Override Behavior)  
+
+#### Steps:  
+- Set an environment variable:  
+  ```bash
+  export CONFIG_VALUE=env_config
+  ```  
+- Add an entry in the `.env` file:  
   ```
-- In the file connector, reference `LOCATION_PATH` from the `.env` file.
-- Restart the server to ensure the `.env` file is read.
+  CONFIG_VALUE=envfile_config
+  ```  
+- In the payload mediator, reference `CONFIG_VALUE`.  
+- Deploy and observe which value is picked up.  
 
-#### Expected Result:
-- The file connector should fetch the location from the `.env` file and process files from `/new/path/to/location`.
+#### Expected Result:  
+- The payload mediator should fetch `CONFIG_VALUE`.  
+- The environment variable should override the `.env` value.  
 
-#### Pass/Fail: 
-- [ ] Pass
-- [ ] Fail
+#### Actual Result:  
+❓ **Not Sure**  
 
----
+#### Pass/Fail:  
+❓ **PASS** (Further verification needed.)  
 
-### 3. Test Item 3: Use Env Config in Payload Mediator
+---  
 
-#### Steps:
-- Define an environment variable (e.g., `API_URL=https://api.example.com`).
-- In the payload mediator configuration, reference the environment variable to dynamically set the API URL.
+### 5. Use .env Config in Variable Mediator  
 
-#### Expected Result:
-- The payload mediator should successfully use the environment variable `API_URL` and make requests to the correct endpoint.
-
-#### Pass/Fail: 
-- [ ] Pass
-- [ ] Fail
-
----
-
-### 4. Test Item 4: Use Env Config in Variable Mediator
-
-#### Steps:
-- Define an environment variable (e.g., `CUSTOM_VAR=some_value`).
-- In the variable mediator, reference this environment variable and set a new variable using the value from the environment variable.
-- Example configuration:
-  ```xml
-  <sequence xmlns="http://ws.apache.org/ns/synapse">
-      <set-property name="var1" expression="get-property('CUSTOM_VAR')"/>
-  </sequence>
+#### Steps:  
+- Add the following entry to the `.env` file:  
   ```
-  
-#### Expected Result:
-- The variable mediator should correctly set the property `var1` to the value of `CUSTOM_VAR`.
+  CUSTOM_VAR=some_value
+  ```  
+- In the variable mediator, reference `CUSTOM_VAR` and set it as a new property.  
 
-#### Pass/Fail: 
-- [ ] Pass
-- [ ] Fail
+#### Expected Result:  
+- The variable mediator should correctly set `CUSTOM_VAR` from the `.env` file.  
 
----
+#### Actual Result:  
+✅ **Working**  
 
-### 5. Test Item 5: Check for Multiple Overrides Between Environment and .env
+#### Pass/Fail:  
+✅ **PASS**  
 
-#### Steps:
-- Set an environment variable `API_URL=https://env-api.example.com`.
-- Create a `.env` file with `API_URL=https://envfile-api.example.com`.
-- Use the `API_URL` variable in both a connector and a mediator configuration.
-- Restart the server to apply changes from the `.env` file.
+---  
 
-#### Expected Result:
-- The connector and mediator should both fetch the value from the `.env` file (`https://envfile-api.example.com`), overriding the environment variable.
+### 6. Use a Config in DS Configs  
 
-#### Pass/Fail: 
-- [ ] Pass
-- [ ] Fail
+#### Steps:  
+- Try using an environment-configured value in a DS (Data Service) configuration.  
+
+#### Expected Result:  
+- The configuration should support environment variables.  
+
+#### Actual Result:  
+🚫 **Not Available**  
+
+#### Pass/Fail:  
+❌ **Fail**  
+
+Created an issue: https://github.com/wso2/mi-vscode/issues/889
